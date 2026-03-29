@@ -1,20 +1,18 @@
 {
   "version": "0.1.0",
-  "releaseDate": "2026-02-15",
+  "releaseDate": "2026-03-28",
   "features": [
-    {
-      "slug": "day-view",
-      "title": "Day View — Your Family's Timeline",
-      "summary": "A clean, vertical timeline grouped by category so you can see your whole day at a glance.",
-      "video": "videos/demo_day_view.mp4",
-      "isNew": true
-    },
-    {
-      "slug": "completion-toggle",
-      "title": "Completion Toggle — Check Off Your Day",
-      "summary": "Tap any item to mark it done. Completed items fade gracefully.",
-      "video": "videos/demo_completion_toggle.mp4",
-      "isNew": true
-    }
+    {"slug": "setup", "title": "Family Setup in Under 3 Minutes", "summary": "Create your family, add members, and pair devices with a PIN.", "video": "videos/demo_setup_flow.mp4"},
+    {"slug": "day-view", "title": "Day View — Your Family's Timeline", "summary": "A clean, vertical timeline grouped by category with completion tracking.", "video": "videos/demo_day_view.mp4"},
+    {"slug": "completion-toggle", "title": "The Satisfying Completion Toggle", "summary": "Per-member task completion with a delightful micro-animation.", "video": "videos/demo_completion_toggle.mp4"},
+    {"slug": "quick-add", "title": "Quick Add — 3 Taps to Schedule", "summary": "Add items to the calendar faster than writing a sticky note.", "video": "videos/demo_quick_add.mp4"},
+    {"slug": "recurrence", "title": "Smart Recurrence", "summary": "Visual recurrence picker with live preview of next 5 occurrences.", "video": "videos/demo_recurrence.mp4"},
+    {"slug": "week-view", "title": "Week at a Glance", "summary": "7-day strip with completion dots and tap-to-view navigation.", "video": "videos/demo_week_view.mp4"},
+    {"slug": "month-view", "title": "Month Overview", "summary": "Traditional month grid with dot indicators for busy days.", "video": "videos/demo_month_view.mp4"},
+    {"slug": "family-management", "title": "Family Management", "summary": "Add, remove, and manage family members and paired devices.", "video": "videos/demo_family_management.mp4"},
+    {"slug": "night-mode", "title": "Night Mode — Calm in the Dark", "summary": "True black display with a warm clock — designed for OLED screens at night.", "video": "videos/demo_night_mode.mp4"},
+    {"slug": "sync", "title": "Seamless Local Sync", "summary": "Automatic device discovery and sub-second sync over your home WiFi.", "video": "videos/demo_sync.mp4"},
+    {"slug": "notifications", "title": "Gentle Notifications", "summary": "Configurable reminders, daily summaries, and quiet hours.", "video": "videos/demo_notifications.mp4"},
+    {"slug": "display-mode", "title": "Display Mode — Dedicated Family Display", "summary": "Turn any device into a child-safe family command center.", "video": "videos/demo_kiosk_mode.mp4"}
   ]
 }
