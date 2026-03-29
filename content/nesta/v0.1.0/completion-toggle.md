@@ -1,30 +1,21 @@
-# Completion Toggle — Check Off Your Day
+# The Satisfying Completion Toggle
 
-One of the simplest but most satisfying features in Nesta. Tap any item to mark it as completed. It fades gently, letting you focus on what is left.
+There is something deeply satisfying about checking things off. Nesta leans into that feeling with a completion toggle that is fast, tactile, and shared across every device in your home. Tap an item, watch the gentle animation, and know that everyone in the family can see it is done.
+
+This is not just about productivity. It is about the small joy of progress. When Dad marks "pack school lunches" as complete, Mum sees it instantly on her phone. When Emma finishes her homework, the whole family's timeline updates. No one has to ask "did you do that?" — the answer is already there, faded to a calm grey on the paper-like display.
 
 ::video[videos/demo_completion_toggle.mp4]
 
+## Key Features
+
+- One-tap completion with a delightful checkmark micro-animation
+- Per-member attribution — see exactly who completed each item
+- Completed items fade gracefully and settle to the bottom of their category
+- Undo toast appears for five seconds after every completion
+- Syncs instantly to every paired device in your household
+
 ## How It Works
 
-Every event and task in the day view has a completion toggle. When you tap an item:
+Every event and task on the day view has a completion toggle. When you tap an item, three things happen in quick succession: a smooth checkmark animation plays in the family member's colour, the item fades to a softer opacity, and it gently repositions itself below the active items in its group. The whole interaction takes less than a second but feels intentional and complete.
 
-1. A subtle checkmark animation plays
-2. The item fades to 40% opacity
-3. It moves to the bottom of its category group
-4. A small "undo" toast appears for 5 seconds
-
-## Shared Completion
-
-When you mark something as done, every family member sees the update instantly. This is especially useful for shared tasks like:
-
-- Packing school lunches
-- Walking the dog
-- Taking out the trash
-
-## Design Decisions
-
-We chose to fade rather than hide completed items. Hiding creates anxiety — did I actually do that? Fading provides confidence while keeping the timeline complete.
-
-::video[videos/demo_completion_toggle.mp4]{title="Undo a Completion"}
-
-The undo gesture was important to get right. We tested swipe-to-undo, shake-to-undo, and a simple toast. The toast won because it requires no explanation and works the same on every device.
+If you tap by mistake, an undo toast slides in from the bottom and stays for five seconds. Tap it, and the item springs back to its original position as if nothing happened. We tested swipe-to-undo, shake-to-undo, and long-press. The simple toast won every time — it requires no explanation and works identically on phones and tablets alike.

@@ -1,7 +1,7 @@
 {
   "name": "Nesta",
-  "tagline": "A calm, local-first family calendar",
-  "description": "Nesta is a shared scheduling app designed for one purpose: keeping your household in sync. Built with privacy and simplicity at its core.",
-  "versions": ["0.2.0", "0.1.0"],
-  "latest": "0.2.0"
+  "tagline": "The calm family calendar that lives on your wall",
+  "description": "Nesta is a local-first family calendar designed to feel like a beautiful paper schedule pinned to your kitchen wall. No accounts, no cloud, no ads. Just your family's day, week, and month — synced across every device in your home over WiFi.",
+  "versions": ["0.1.0"],
+  "latest": "0.1.0"
 }
