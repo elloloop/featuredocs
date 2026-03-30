@@ -42,3 +42,7 @@ next-env.d.ts
 
 # feedback database
 .data/
+
+# CLI build output and dependencies
+cli/dist/
+cli/node_modules/
