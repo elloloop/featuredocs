@@ -15,6 +15,7 @@ export async function POST(request: NextRequest) {
       product: body.product,
       feature: body.feature,
       version: body.version,
+      locale: body.locale ?? "en",
       type: body.type,
       selectedText: body.selectedText,
       videoReference: body.videoReference,
@@ -61,7 +62,10 @@ function validateFeedbackInput(
   if (!body.version || typeof body.version !== "string") {
     return "version is required";
   }
-  if (!body.type || !["text", "video", "general"].includes(body.type as string)) {
+  if (
+    !body.type ||
+    !["text", "video", "general"].includes(body.type as string)
+  ) {
     return "type must be one of: text, video, general";
   }
   if (!body.comment || typeof body.comment !== "string") {

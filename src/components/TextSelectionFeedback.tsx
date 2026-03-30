@@ -7,6 +7,7 @@ interface TextSelectionFeedbackProps {
   product: string;
   feature: string;
   version: string;
+  locale: string;
 }
 
 interface PopoverPosition {
@@ -18,6 +19,7 @@ export default function TextSelectionFeedback({
   product,
   feature,
   version,
+  locale,
 }: TextSelectionFeedbackProps) {
   const [selectedText, setSelectedText] = useState<string | null>(null);
   const [popoverPosition, setPopoverPosition] =
@@ -113,6 +115,7 @@ export default function TextSelectionFeedback({
         product={product}
         feature={feature}
         version={version}
+        locale={locale}
         type="text"
         selectedText={selectedText ?? undefined}
       />

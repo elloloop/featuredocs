@@ -8,6 +8,7 @@ interface FeedbackDialogProps {
   product: string;
   feature: string;
   version: string;
+  locale: string;
   type: "text" | "video" | "general";
   selectedText?: string;
   videoReference?: string;
@@ -19,6 +20,7 @@ export default function FeedbackDialog({
   product,
   feature,
   version,
+  locale,
   type,
   selectedText,
   videoReference,
@@ -43,6 +45,7 @@ export default function FeedbackDialog({
           product,
           feature,
           version,
+          locale,
           type,
           selectedText,
           videoReference,
@@ -67,7 +70,18 @@ export default function FeedbackDialog({
     } finally {
       setIsSubmitting(false);
     }
-  }, [comment, email, product, feature, version, type, selectedText, videoReference, onClose]);
+  }, [
+    comment,
+    email,
+    product,
+    feature,
+    version,
+    locale,
+    type,
+    selectedText,
+    videoReference,
+    onClose,
+  ]);
 
   if (!isOpen) return null;
 
@@ -129,7 +143,8 @@ export default function FeedbackDialog({
             {videoReference && (
               <div className="mb-4 rounded border border-[#E8E6E1] bg-[#FAF9F6] p-3">
                 <p className="text-xs text-[#6B6B6B]">
-                  Reporting video: <span className="font-mono">{videoReference}</span>
+                  Reporting video:{" "}
+                  <span className="font-mono">{videoReference}</span>
                 </p>
               </div>
             )}

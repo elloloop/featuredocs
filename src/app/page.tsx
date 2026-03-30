@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { getAllProducts } from "@/lib/content";
+import { listProducts } from "@/lib/content";
 
 export default function HomePage() {
-  const products = getAllProducts();
+  const products = listProducts();
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">

@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProduct, getVersionManifest } from "@/lib/content";
+import { loadProduct, loadFeatures, getLocalizedValue } from "@/lib/content";
 
 interface ChangelogPageProps {
   params: Promise<{ product: string }>;
@@ -8,21 +8,23 @@ interface ChangelogPageProps {
 
 export default async function ChangelogPage({ params }: ChangelogPageProps) {
   const { product: productSlug } = await params;
-  const product = getProduct(productSlug);
+  const product = loadProduct(productSlug);
 
   if (!product) {
     notFound();
   }
 
+  const defaultLocale = product.defaultLocale;
+
   const versionManifests = product.versions
-    .map((version) => getVersionManifest(productSlug, version))
+    .map((version) => loadFeatures(productSlug, version))
     .filter(Boolean);
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-2">
         <Link
-          href={`/${productSlug}`}
+          href={`/${productSlug}/${defaultLocale}`}
           className="text-xs text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
         >
           &larr; {product.name}
@@ -63,32 +65,40 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
               </div>
 
               <ul className="space-y-2">
-                {manifest.features.map((feature) => (
-                  <li key={feature.slug} className="flex items-start gap-2">
-                    <span className="mt-0.5 text-xs text-[#6B6B6B]">
-                      {feature.isNew ? (
-                        <span className="inline-block rounded bg-[#E8F5E9] px-1.5 py-0.5 text-[10px] font-medium text-[#2E7D32]">
-                          NEW
-                        </span>
-                      ) : (
+                {manifest.features.map((feature) => {
+                  const title = getLocalizedValue(
+                    feature.title,
+                    defaultLocale,
+                    defaultLocale
+                  );
+                  const summary = getLocalizedValue(
+                    feature.summary,
+                    defaultLocale,
+                    defaultLocale
+                  );
+
+                  return (
+                    <li
+                      key={feature.slug}
+                      className="flex items-start gap-2"
+                    >
+                      <span className="mt-0.5 text-xs text-[#6B6B6B]">
                         <span className="inline-block rounded bg-[#F5F5F0] px-1.5 py-0.5 text-[10px] font-medium text-[#6B6B6B]">
-                          UPD
+                          FEAT
                         </span>
-                      )}
-                    </span>
-                    <div>
-                      <Link
-                        href={`/${productSlug}/${feature.slug}/${manifest.version}`}
-                        className="text-sm font-medium text-[#1A1A1A] underline underline-offset-2 hover:opacity-70"
-                      >
-                        {feature.title}
-                      </Link>
-                      <p className="text-xs text-[#6B6B6B]">
-                        {feature.summary}
-                      </p>
-                    </div>
-                  </li>
-                ))}
+                      </span>
+                      <div>
+                        <Link
+                          href={`/${productSlug}/${defaultLocale}/${feature.slug}/${manifest.version}`}
+                          className="text-sm font-medium text-[#1A1A1A] underline underline-offset-2 hover:opacity-70"
+                        >
+                          {title}
+                        </Link>
+                        <p className="text-xs text-[#6B6B6B]">{summary}</p>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           );

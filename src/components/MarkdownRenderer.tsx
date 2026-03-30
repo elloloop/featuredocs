@@ -5,18 +5,25 @@ import VideoPlayer from "./VideoPlayer";
 interface MarkdownRendererProps {
   html: string;
   productSlug: string;
-  featureSlug: string;
   version: string;
+  locale: string;
+  videoUrls: Record<string, { url: string; exists: boolean }>;
   onReportVideo?: (videoReference: string) => void;
 }
 
 export default function MarkdownRenderer({
   html,
   productSlug,
-  featureSlug,
   version,
+  locale,
+  videoUrls,
   onReportVideo,
 }: MarkdownRendererProps) {
+  // Suppress unused variable warnings for context params passed through
+  void productSlug;
+  void version;
+  void locale;
+
   const parts = splitHtmlByVideoEmbeds(html);
 
   return (
@@ -30,15 +37,18 @@ export default function MarkdownRenderer({
             />
           );
         }
-        const videoSrc = `/api/content/${productSlug}/v${version}/${part.video}`;
+
+        const videoInfo = videoUrls[part.video] ?? {
+          url: "",
+          exists: false,
+        };
+
         return (
           <VideoPlayer
             key={index}
-            src={videoSrc}
+            src={videoInfo.url}
             title={part.title}
-            productSlug={productSlug}
-            featureSlug={featureSlug}
-            version={version}
+            hasVideo={videoInfo.exists}
             onReportVideo={onReportVideo}
           />
         );

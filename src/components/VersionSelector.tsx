@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 interface VersionSelectorProps {
   productSlug: string;
+  locale: string;
   featureSlug: string;
   currentVersion: string;
   versions: string[];
@@ -12,6 +13,7 @@ interface VersionSelectorProps {
 
 export default function VersionSelector({
   productSlug,
+  locale,
   featureSlug,
   currentVersion,
   versions,
@@ -21,7 +23,7 @@ export default function VersionSelector({
 
   function handleVersionChange(event: React.ChangeEvent<HTMLSelectElement>) {
     const newVersion = event.target.value;
-    router.push(`/${productSlug}/${featureSlug}/${newVersion}`);
+    router.push(`/${productSlug}/${locale}/${featureSlug}/${newVersion}`);
   }
 
   return (

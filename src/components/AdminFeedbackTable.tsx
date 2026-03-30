@@ -143,6 +143,9 @@ export default function AdminFeedbackTable() {
                   Feature
                 </th>
                 <th className="pb-3 pr-4 text-xs font-medium text-[#6B6B6B]">
+                  Locale
+                </th>
+                <th className="pb-3 pr-4 text-xs font-medium text-[#6B6B6B]">
                   Type
                 </th>
                 <th className="pb-3 pr-4 text-xs font-medium text-[#6B6B6B]">
@@ -170,6 +173,9 @@ export default function AdminFeedbackTable() {
                   </td>
                   <td className="py-3 pr-4 text-xs text-[#1A1A1A]">
                     {item.feature}
+                  </td>
+                  <td className="py-3 pr-4 text-xs text-[#6B6B6B]">
+                    {item.locale}
                   </td>
                   <td className="py-3 pr-4">
                     <TypeBadge type={item.type} />

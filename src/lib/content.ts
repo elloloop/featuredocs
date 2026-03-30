@@ -10,7 +10,9 @@ import type { Product, VersionManifest, Feature } from "./types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
-export function getAllProducts(): Product[] {
+/* ─── Product loading ─────────────────────────────────── */
+
+export function listProducts(): Product[] {
   if (!fs.existsSync(CONTENT_DIR)) {
     return [];
   }
@@ -20,7 +22,7 @@ export function getAllProducts(): Product[] {
 
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    const product = getProduct(entry.name);
+    const product = loadProduct(entry.name);
     if (product) {
       products.push(product);
     }
@@ -29,7 +31,7 @@ export function getAllProducts(): Product[] {
   return products;
 }
 
-export function getProduct(slug: string): Product | null {
+export function loadProduct(slug: string): Product | null {
   const productJsonPath = path.join(CONTENT_DIR, slug, "product.json");
   if (!fs.existsSync(productJsonPath)) {
     return null;
@@ -40,7 +42,9 @@ export function getProduct(slug: string): Product | null {
   return { slug, ...data };
 }
 
-export function getVersionManifest(
+/* ─── Feature manifest loading ────────────────────────── */
+
+export function loadFeatures(
   productSlug: string,
   version: string
 ): VersionManifest | null {
@@ -63,11 +67,23 @@ export function getFeatureFromManifest(
   version: string,
   featureSlug: string
 ): Feature | null {
-  const manifest = getVersionManifest(productSlug, version);
+  const manifest = loadFeatures(productSlug, version);
   if (!manifest) return null;
 
   return manifest.features.find((f) => f.slug === featureSlug) ?? null;
 }
+
+/* ─── Localized string helpers ────────────────────────── */
+
+export function getLocalizedValue(
+  localizedMap: Record<string, string>,
+  locale: string,
+  defaultLocale: string
+): string {
+  return localizedMap[locale] ?? localizedMap[defaultLocale] ?? Object.values(localizedMap)[0] ?? "";
+}
+
+/* ─── Markdown rendering with locale fallback ─────────── */
 
 function transformVideoDirectives(markdown: string): string {
   return markdown.replace(
@@ -79,23 +95,57 @@ function transformVideoDirectives(markdown: string): string {
   );
 }
 
-export async function renderMarkdown(
-  productSlug: string,
+export async function loadFeatureDoc(
+  product: string,
   version: string,
-  featureSlug: string
+  locale: string,
+  slug: string
 ): Promise<string | null> {
-  const markdownPath = path.join(
+  const productData = loadProduct(product);
+  const defaultLocale = productData?.defaultLocale ?? "en";
+
+  // Try locale-specific path first
+  const localePath = path.join(
     CONTENT_DIR,
-    productSlug,
+    product,
     `v${version}`,
-    `${featureSlug}.md`
+    locale,
+    `${slug}.md`
   );
 
-  if (!fs.existsSync(markdownPath)) {
+  // Fall back to default locale
+  const fallbackPath = path.join(
+    CONTENT_DIR,
+    product,
+    `v${version}`,
+    defaultLocale,
+    `${slug}.md`
+  );
+
+  let markdownPath: string | null = null;
+  if (fs.existsSync(localePath)) {
+    markdownPath = localePath;
+  } else if (fs.existsSync(fallbackPath)) {
+    markdownPath = fallbackPath;
+  }
+
+  if (!markdownPath) {
     return null;
   }
 
   const raw = fs.readFileSync(markdownPath, "utf-8");
+  return raw;
+}
+
+export async function renderFeatureDoc(
+  product: string,
+  version: string,
+  locale: string,
+  slug: string
+): Promise<string | null> {
+  const raw = await loadFeatureDoc(product, version, locale, slug);
+  if (!raw) return null;
+
   const transformed = transformVideoDirectives(raw);
 
   const result = await unified()
@@ -109,27 +159,72 @@ export async function renderMarkdown(
   return String(result);
 }
 
-export function getVideoPath(
-  productSlug: string,
+/* ─── Video URL resolution with locale fallback ───────── */
+
+export function resolveVideoUrl(
+  product: string,
   version: string,
+  locale: string,
   filename: string
 ): string {
-  return `/api/content/${productSlug}/v${version}/${filename}`;
-}
-
-export function resolveVideoFilePath(
-  productSlug: string,
-  version: string,
-  filename: string
-): string | null {
-  const videoPath = path.join(
+  // Locale-specific video path on disk
+  const localeVideoPath = path.join(
     CONTENT_DIR,
-    productSlug,
+    product,
     `v${version}`,
+    "videos",
+    locale,
     filename
   );
-  if (!fs.existsSync(videoPath)) {
-    return null;
+
+  if (fs.existsSync(localeVideoPath)) {
+    return `/api/content/${product}/v${version}/videos/${locale}/${filename}`;
   }
-  return videoPath;
+
+  // Shared fallback
+  return `/api/content/${product}/v${version}/videos/${filename}`;
+}
+
+export function videoExistsOnDisk(
+  product: string,
+  version: string,
+  locale: string,
+  filename: string
+): boolean {
+  const localeVideoPath = path.join(
+    CONTENT_DIR,
+    product,
+    `v${version}`,
+    "videos",
+    locale,
+    filename
+  );
+  if (fs.existsSync(localeVideoPath)) return true;
+
+  const sharedVideoPath = path.join(
+    CONTENT_DIR,
+    product,
+    `v${version}`,
+    "videos",
+    filename
+  );
+  return fs.existsSync(sharedVideoPath);
+}
+
+/* ─── Content saving ──────────────────────────────────── */
+
+export function saveFeatureDoc(
+  product: string,
+  version: string,
+  locale: string,
+  slug: string,
+  content: string
+): void {
+  const dirPath = path.join(CONTENT_DIR, product, `v${version}`, locale);
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath, { recursive: true });
+  }
+
+  const filePath = path.join(dirPath, `${slug}.md`);
+  fs.writeFileSync(filePath, content, "utf-8");
 }

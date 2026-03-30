@@ -5,15 +5,14 @@ import { useRef, useState, useCallback } from "react";
 interface VideoPlayerProps {
   src: string;
   title?: string;
-  productSlug: string;
-  featureSlug: string;
-  version: string;
+  hasVideo: boolean;
   onReportVideo?: (videoReference: string) => void;
 }
 
 export default function VideoPlayer({
   src,
   title,
+  hasVideo,
   onReportVideo,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -42,6 +41,43 @@ export default function VideoPlayer({
       onReportVideo(src);
     }
   }, [onReportVideo, src]);
+
+  // Placeholder when no video exists
+  if (!hasVideo) {
+    return (
+      <div className="my-6 flex items-center justify-center rounded-lg border border-dashed border-[#E8E6E1] bg-[#FAF9F6] p-12">
+        <div className="text-center">
+          <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            className="mx-auto mb-3 text-[#B0B0B0]"
+          >
+            <rect
+              x="4"
+              y="8"
+              width="32"
+              height="24"
+              rx="4"
+              stroke="currentColor"
+              strokeWidth="2"
+            />
+            <path
+              d="M16 14v12l10-6-10-6z"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <p className="text-xs text-[#B0B0B0]">Video coming soon</p>
+          {title && (
+            <p className="mt-1 text-xs text-[#B0B0B0]">{title}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

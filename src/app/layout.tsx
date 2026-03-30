@@ -4,7 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "featuredocs",
-  description: "Versioned product feature documentation",
+  description: "Versioned product feature documentation with i18n",
 };
 
 export default function RootLayout({

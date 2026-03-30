@@ -10,6 +10,8 @@ interface FeaturePageClientProps {
   productSlug: string;
   featureSlug: string;
   version: string;
+  locale: string;
+  videoUrls: Record<string, { url: string; exists: boolean }>;
 }
 
 export default function FeaturePageClient({
@@ -17,6 +19,8 @@ export default function FeaturePageClient({
   productSlug,
   featureSlug,
   version,
+  locale,
+  videoUrls,
 }: FeaturePageClientProps) {
   const [videoReportRef, setVideoReportRef] = useState<string | null>(null);
   const [isVideoDialogOpen, setIsVideoDialogOpen] = useState(false);
@@ -32,12 +36,14 @@ export default function FeaturePageClient({
         product={productSlug}
         feature={featureSlug}
         version={version}
+        locale={locale}
       />
       <MarkdownRenderer
         html={html}
         productSlug={productSlug}
-        featureSlug={featureSlug}
         version={version}
+        locale={locale}
+        videoUrls={videoUrls}
         onReportVideo={handleReportVideo}
       />
       <FeedbackDialog
@@ -49,6 +55,7 @@ export default function FeaturePageClient({
         product={productSlug}
         feature={featureSlug}
         version={version}
+        locale={locale}
         type="video"
         videoReference={videoReportRef ?? undefined}
       />

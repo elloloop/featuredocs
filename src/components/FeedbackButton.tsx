@@ -7,12 +7,14 @@ interface FeedbackButtonProps {
   product: string;
   feature: string;
   version: string;
+  locale: string;
 }
 
 export default function FeedbackButton({
   product,
   feature,
   version,
+  locale,
 }: FeedbackButtonProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -39,6 +41,7 @@ export default function FeedbackButton({
         product={product}
         feature={feature}
         version={version}
+        locale={locale}
         type="general"
       />
     </>

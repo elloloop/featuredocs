@@ -21,6 +21,7 @@ function getDatabase(): Database.Database {
       product TEXT NOT NULL,
       feature TEXT NOT NULL,
       version TEXT NOT NULL,
+      locale TEXT NOT NULL DEFAULT 'en',
       type TEXT NOT NULL CHECK(type IN ('text', 'video', 'general')),
       selected_text TEXT,
       video_reference TEXT,
@@ -41,6 +42,7 @@ function rowToFeedbackItem(row: Record<string, unknown>): FeedbackItem {
     product: row.product as string,
     feature: row.feature as string,
     version: row.version as string,
+    locale: (row.locale as string) ?? "en",
     type: row.type as FeedbackItem["type"],
     selectedText: row.selected_text as string | null,
     videoReference: row.video_reference as string | null,
@@ -56,14 +58,15 @@ export function createFeedback(input: FeedbackCreateInput): FeedbackItem {
   const db = getDatabase();
   try {
     const stmt = db.prepare(`
-      INSERT INTO feedback (product, feature, version, type, selected_text, video_reference, comment, email)
-      VALUES (@product, @feature, @version, @type, @selectedText, @videoReference, @comment, @email)
+      INSERT INTO feedback (product, feature, version, locale, type, selected_text, video_reference, comment, email)
+      VALUES (@product, @feature, @version, @locale, @type, @selectedText, @videoReference, @comment, @email)
     `);
 
     const result = stmt.run({
       product: input.product,
       feature: input.feature,
       version: input.version,
+      locale: input.locale,
       type: input.type,
       selectedText: input.selectedText ?? null,
       videoReference: input.videoReference ?? null,
