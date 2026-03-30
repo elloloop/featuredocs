@@ -1,6 +1,24 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
+
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: string | HTMLElement,
+        options: {
+          sitekey: string;
+          callback: (token: string) => void;
+          "error-callback"?: () => void;
+          size?: "invisible" | "normal" | "compact";
+        }
+      ) => string;
+      remove: (widgetId: string) => void;
+      reset: (widgetId: string) => void;
+    };
+  }
+}
 
 interface FeedbackDialogProps {
   isOpen: boolean;
@@ -13,6 +31,9 @@ interface FeedbackDialogProps {
   selectedText?: string;
   videoReference?: string;
 }
+
+const TURNSTILE_SITE_KEY =
+  process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "1x00000000000000000000AA";
 
 export default function FeedbackDialog({
   isOpen,
@@ -27,9 +48,64 @@ export default function FeedbackDialog({
 }: FeedbackDialogProps) {
   const [comment, setComment] = useState("");
   const [email, setEmail] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const turnstileContainerRef = useRef<HTMLDivElement>(null);
+  const turnstileWidgetId = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    function loadTurnstile() {
+      if (window.turnstile && turnstileContainerRef.current) {
+        if (turnstileWidgetId.current) {
+          window.turnstile.remove(turnstileWidgetId.current);
+        }
+        turnstileWidgetId.current = window.turnstile.render(
+          turnstileContainerRef.current,
+          {
+            sitekey: TURNSTILE_SITE_KEY,
+            callback: (token: string) => {
+              setTurnstileToken(token);
+            },
+            "error-callback": () => {
+              setTurnstileToken(null);
+            },
+            size: "invisible",
+          }
+        );
+        return;
+      }
+
+      // Load script if not present
+      if (!document.querySelector('script[src*="turnstile"]')) {
+        const script = document.createElement("script");
+        script.src =
+          "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+        script.async = true;
+        script.onload = () => {
+          // Small delay for turnstile to initialize
+          setTimeout(loadTurnstile, 100);
+        };
+        document.head.appendChild(script);
+      } else {
+        // Script already in DOM but turnstile not ready yet
+        setTimeout(loadTurnstile, 100);
+      }
+    }
+
+    loadTurnstile();
+
+    return () => {
+      if (turnstileWidgetId.current && window.turnstile) {
+        window.turnstile.remove(turnstileWidgetId.current);
+        turnstileWidgetId.current = null;
+      }
+    };
+  }, [isOpen]);
 
   const handleSubmit = useCallback(async () => {
     if (!comment.trim()) return;
@@ -51,8 +127,15 @@ export default function FeedbackDialog({
           videoReference,
           comment: comment.trim(),
           email: email.trim() || undefined,
+          website: honeypot,
+          turnstileToken: turnstileToken ?? "",
         }),
       });
+
+      if (response.status === 429) {
+        setError("Too many submissions. Please try again later.");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to submit feedback");
@@ -63,6 +146,8 @@ export default function FeedbackDialog({
         onClose();
         setComment("");
         setEmail("");
+        setHoneypot("");
+        setTurnstileToken(null);
         setSubmitted(false);
       }, 2000);
     } catch {
@@ -73,6 +158,8 @@ export default function FeedbackDialog({
   }, [
     comment,
     email,
+    honeypot,
+    turnstileToken,
     product,
     feature,
     version,
@@ -162,7 +249,7 @@ export default function FeedbackDialog({
                 onChange={(event) => setComment(event.target.value)}
                 className="w-full rounded border border-[#E8E6E1] bg-white px-3 py-2 text-sm text-[#1A1A1A] placeholder:text-[#B0B0B0] focus:border-[#6B6B6B] focus:outline-none focus:ring-1 focus:ring-[#6B6B6B]"
                 rows={3}
-                placeholder="Describe what needs updating..."
+                placeholder="What's outdated or incorrect?"
                 autoFocus
               />
             </div>
@@ -183,6 +270,21 @@ export default function FeedbackDialog({
                 placeholder="your@email.com"
               />
             </div>
+
+            {/* Honeypot field — hidden from real users */}
+            <input
+              name="website"
+              type="text"
+              value={honeypot}
+              onChange={(event) => setHoneypot(event.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              style={{ display: "none" }}
+              aria-hidden="true"
+            />
+
+            {/* Turnstile widget container (invisible mode) */}
+            <div ref={turnstileContainerRef} />
 
             {error && (
               <p className="mb-4 text-sm text-red-600">{error}</p>

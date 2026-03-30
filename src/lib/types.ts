@@ -24,9 +24,12 @@ export interface Feature {
   video: string | null;
 }
 
+export type VersionStatus = "draft" | "published" | "archived";
+
 export interface VersionManifest {
   version: string;
-  releaseDate: string;
+  status: VersionStatus;
+  releaseDate?: string;
   features: Feature[];
 }
 

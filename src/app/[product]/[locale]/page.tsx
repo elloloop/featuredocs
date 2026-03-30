@@ -4,15 +4,20 @@ import { loadProduct, loadFeatures, getLocalizedValue } from "@/lib/content";
 import { getFeedbackCountForFeature } from "@/lib/feedback-db";
 import FeatureCard from "@/components/FeatureCard";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
+import DraftBanner from "@/components/DraftBanner";
 
 interface ProductLocalePageProps {
   params: Promise<{ product: string; locale: string }>;
+  searchParams: Promise<{ drafts?: string }>;
 }
 
 export default async function ProductLocalePage({
   params,
+  searchParams,
 }: ProductLocalePageProps) {
   const { product: productSlug, locale } = await params;
+  const { drafts } = await searchParams;
+  const showDrafts = drafts === "true";
   const product = loadProduct(productSlug);
 
   if (!product) {
@@ -30,6 +35,32 @@ export default async function ProductLocalePage({
     notFound();
   }
 
+  const isDraft = latestManifest.status === "draft";
+
+  // If the version is a draft and drafts mode is not enabled, hide it
+  if (isDraft && !showDrafts) {
+    return (
+      <div className="mx-auto max-w-4xl px-6 py-12">
+        <div className="mb-2">
+          <Link
+            href="/"
+            className="text-xs text-[#6B6B6B] hover:text-[#1A1A1A] transition-colors"
+          >
+            &larr; All Products
+          </Link>
+        </div>
+        <div className="mt-8 rounded-lg border border-[#E8E6E1] bg-white p-12 text-center">
+          <h2 className="font-serif text-xl font-semibold text-[#1A1A1A]">
+            No published versions
+          </h2>
+          <p className="mt-2 text-sm text-[#6B6B6B]">
+            This product has no published versions yet.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-2">
@@ -40,6 +71,8 @@ export default async function ProductLocalePage({
           &larr; All Products
         </Link>
       </div>
+
+      {isDraft && showDrafts && <DraftBanner />}
 
       <div className="mb-10">
         <div className="flex items-start justify-between">

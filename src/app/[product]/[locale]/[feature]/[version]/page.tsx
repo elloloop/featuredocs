@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
   loadProduct,
+  loadFeatures,
   getFeatureFromManifest,
   renderFeatureDoc,
   loadFeatureDoc,
@@ -14,6 +15,7 @@ import FeedbackButton from "@/components/FeedbackButton";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
 import FeaturePageClient from "@/components/FeaturePageClient";
 import InlineEditor from "@/components/InlineEditor";
+import DraftBanner from "@/components/DraftBanner";
 
 interface FeatureVersionPageProps {
   params: Promise<{
@@ -96,6 +98,10 @@ export default async function FeatureVersionPage({
   );
   const isLatest = version === product.latest;
 
+  // Check draft status
+  const manifest = loadFeatures(productSlug, version);
+  const isDraft = manifest?.status === "draft";
+
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
       <div className="mb-2">
@@ -106,6 +112,14 @@ export default async function FeatureVersionPage({
           &larr; {product.name}
         </Link>
       </div>
+
+      {isDraft && (
+        <DraftBanner
+          showPublishButton
+          product={productSlug}
+          version={version}
+        />
+      )}
 
       <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>

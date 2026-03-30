@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import remarkRehype from "remark-rehype";
 import rehypeRaw from "rehype-raw";
 import rehypeStringify from "rehype-stringify";
-import type { Product, VersionManifest, Feature } from "./types";
+import type { Product, VersionManifest, Feature, VersionStatus } from "./types";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -60,6 +60,36 @@ export function loadFeatures(
 
   const raw = fs.readFileSync(featuresJsonPath, "utf-8");
   return JSON.parse(raw) as VersionManifest;
+}
+
+export function isVersionPublished(
+  productSlug: string,
+  version: string
+): boolean {
+  const manifest = loadFeatures(productSlug, version);
+  if (!manifest) return false;
+  return manifest.status === "published";
+}
+
+export function setVersionStatus(
+  productSlug: string,
+  version: string,
+  status: VersionStatus
+): void {
+  const featuresJsonPath = path.join(
+    CONTENT_DIR,
+    productSlug,
+    `v${version}`,
+    "features.json"
+  );
+  if (!fs.existsSync(featuresJsonPath)) {
+    throw new Error(`Version manifest not found: ${productSlug}/v${version}`);
+  }
+
+  const raw = fs.readFileSync(featuresJsonPath, "utf-8");
+  const manifest = JSON.parse(raw) as VersionManifest;
+  manifest.status = status;
+  fs.writeFileSync(featuresJsonPath, JSON.stringify(manifest, null, 2) + "\n", "utf-8");
 }
 
 export function getFeatureFromManifest(
