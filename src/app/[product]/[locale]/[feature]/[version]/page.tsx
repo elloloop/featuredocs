@@ -1,18 +1,29 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
-  getProduct,
-  getDocument,
-  listFeatures,
-} from "@/lib/api/content";
-import type { ProductResponse, FeatureResponse } from "@/lib/api/content";
+  loadProduct,
+  loadFeatures,
+  loadFeatureDocument,
+  generateAllFeatureParams,
+} from "@/lib/content-static";
+import { renderMarkdown } from "@/lib/markdown";
 import VersionSelector from "@/components/VersionSelector";
 import FeedbackButton from "@/components/FeedbackButton";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import InlineEditor from "@/components/InlineEditor";
-import DraftBanner from "@/components/DraftBanner";
+import FeatureDocContent from "@/components/FeatureDocContent";
+
+export function generateStaticParams() {
+  return generateAllFeatureParams();
+}
+
+interface FeatureVersionPageProps {
+  params: Promise<{
+    product: string;
+    locale: string;
+    feature: string;
+    version: string;
+  }>;
+}
 
 /** Resolve a localized value with fallback to default locale, then first available. */
 function getLocalizedValue(
@@ -28,91 +39,28 @@ function getLocalizedValue(
   );
 }
 
-interface FeatureVersionPageProps {
-  productSlug: string;
-  locale: string;
-  featureSlug: string;
-  version: string;
-}
-
-export default function FeatureVersionPage({
-  productSlug,
-  locale,
-  featureSlug,
-  version,
+export default async function FeatureVersionPage({
+  params,
 }: FeatureVersionPageProps) {
-  const [product, setProduct] = useState<ProductResponse | null>(null);
-  const [feature, setFeature] = useState<FeatureResponse | null>(null);
-  const [rawMarkdown, setRawMarkdown] = useState<string>("");
-  const [renderedHtml, setRenderedHtml] = useState<string>("");
-  const [versionStatus, setVersionStatus] = useState<string>("published");
-  const [isLoading, setIsLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const {
+    product: productSlug,
+    locale,
+    feature: featureSlug,
+    version,
+  } = await params;
 
-  useEffect(() => {
-    async function loadData() {
-      const productData = await getProduct(productSlug);
-      if (!productData) {
-        setNotFound(true);
-        setIsLoading(false);
-        return;
-      }
-
-      if (!productData.locales.includes(locale)) {
-        setNotFound(true);
-        setIsLoading(false);
-        return;
-      }
-
-      setProduct(productData);
-
-      // Get version status
-      const featuresData = await listFeatures(productSlug, version, true);
-      setVersionStatus(featuresData.versionStatus);
-
-      // Get the document
-      const doc = await getDocument(productSlug, version, locale, featureSlug);
-      if (!doc || !doc.feature) {
-        setFeature(null);
-        setIsLoading(false);
-        return;
-      }
-
-      setFeature(doc.feature);
-      setRawMarkdown(doc.content);
-      setRenderedHtml(doc.renderedHtml);
-      setIsLoading(false);
-    }
-
-    loadData();
-  }, [productSlug, locale, featureSlug, version]);
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        <div className="py-12 text-center text-sm text-[#6B6B6B]">
-          Loading...
-        </div>
-      </div>
-    );
+  const product = loadProduct(productSlug);
+  if (!product) {
+    notFound();
   }
 
-  if (notFound) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12 text-center">
-        <h1 className="font-serif text-2xl font-bold text-[#1A1A1A]">
-          Not found
-        </h1>
-        <p className="mt-2 text-sm text-[#6B6B6B]">
-          The page you are looking for does not exist.
-        </p>
-      </div>
-    );
+  if (!product.locales.includes(locale)) {
+    notFound();
   }
 
-  if (!product) return null;
+  const features = loadFeatures(productSlug, version);
+  const feature = features.find((f) => f.slug === featureSlug);
 
-  // Feature does not exist in this version
   if (!feature) {
     return (
       <div className="mx-auto max-w-4xl px-6 py-12">
@@ -147,13 +95,23 @@ export default function FeatureVersionPage({
     );
   }
 
+  const rawMarkdown =
+    loadFeatureDocument(
+      productSlug,
+      version,
+      locale,
+      featureSlug,
+      product.defaultLocale,
+    ) ?? "";
+
+  const renderedHtml = renderMarkdown(rawMarkdown, productSlug);
+
   const featureTitle = getLocalizedValue(
     feature.title,
     locale,
     product.defaultLocale,
   );
   const isLatest = version === product.latest;
-  const isDraft = versionStatus === "draft";
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
@@ -165,14 +123,6 @@ export default function FeatureVersionPage({
           &larr; {product.name}
         </Link>
       </div>
-
-      {isDraft && (
-        <DraftBanner
-          showPublishButton
-          product={productSlug}
-          version={version}
-        />
-      )}
 
       <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
@@ -209,7 +159,7 @@ export default function FeatureVersionPage({
       </div>
 
       <div className="rounded-lg border border-[#E8E6E1] bg-white p-8">
-        <InlineEditor
+        <FeatureDocContent
           product={productSlug}
           version={version}
           locale={locale}

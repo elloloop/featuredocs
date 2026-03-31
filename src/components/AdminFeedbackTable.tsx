@@ -24,7 +24,7 @@ export default function AdminFeedbackTable() {
       });
       setFeedbackItems(items);
     } catch {
-      // Silent failure for admin page
+      // API not deployed yet — show empty state gracefully
     } finally {
       setIsLoading(false);
     }

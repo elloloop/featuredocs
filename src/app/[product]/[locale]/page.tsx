@@ -1,90 +1,48 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProduct, listFeatures } from "@/lib/api/content";
-import type { ProductResponse, FeatureResponse } from "@/lib/api/content";
+import {
+  listProducts,
+  loadProduct,
+  loadFeatures,
+  loadVersionManifest,
+} from "@/lib/content-static";
 import FeatureCard from "@/components/FeatureCard";
 import LocaleSwitcher from "@/components/LocaleSwitcher";
-import DraftBanner from "@/components/DraftBanner";
 
-interface ProductLocalePageProps {
-  productSlug: string;
-  locale: string;
+export function generateStaticParams() {
+  const products = listProducts();
+  return products.flatMap((product) =>
+    product.locales.map((locale) => ({
+      product: product.slug,
+      locale,
+    })),
+  );
 }
 
-export default function ProductLocalePage({
-  productSlug,
-  locale,
+interface ProductLocalePageProps {
+  params: Promise<{ product: string; locale: string }>;
+}
+
+export default async function ProductLocalePage({
+  params,
 }: ProductLocalePageProps) {
-  const searchParams = useSearchParams();
-  const showDrafts = searchParams.get("drafts") === "true";
+  const { product: productSlug, locale } = await params;
+  const product = loadProduct(productSlug);
 
-  const [product, setProduct] = useState<ProductResponse | null>(null);
-  const [features, setFeatures] = useState<FeatureResponse[]>([]);
-  const [versionStatus, setVersionStatus] = useState<string>("draft");
-  const [isLoading, setIsLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-
-  useEffect(() => {
-    async function loadData() {
-      const productData = await getProduct(productSlug);
-      if (!productData) {
-        setNotFound(true);
-        setIsLoading(false);
-        return;
-      }
-
-      if (!productData.locales.includes(locale)) {
-        setNotFound(true);
-        setIsLoading(false);
-        return;
-      }
-
-      setProduct(productData);
-
-      const featuresData = await listFeatures(
-        productSlug,
-        productData.latest,
-        showDrafts,
-      );
-      setFeatures(featuresData.features);
-      setVersionStatus(featuresData.versionStatus);
-      setIsLoading(false);
-    }
-
-    loadData();
-  }, [productSlug, locale, showDrafts]);
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        <div className="py-12 text-center text-sm text-[#6B6B6B]">
-          Loading...
-        </div>
-      </div>
-    );
+  if (!product) {
+    notFound();
   }
 
-  if (notFound) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12 text-center">
-        <h1 className="font-serif text-2xl font-bold text-[#1A1A1A]">
-          Not found
-        </h1>
-        <p className="mt-2 text-sm text-[#6B6B6B]">
-          The page you are looking for does not exist.
-        </p>
-      </div>
-    );
+  if (!product.locales.includes(locale)) {
+    notFound();
   }
 
-  if (!product) return null;
+  const features = loadFeatures(productSlug, product.latest);
+  const manifest = loadVersionManifest(productSlug, product.latest);
+  const versionStatus = manifest?.status ?? "draft";
+  const isPublished = versionStatus === "published";
 
-  const isDraft = versionStatus === "draft";
-
-  if (isDraft && !showDrafts) {
+  if (!isPublished) {
     return (
       <div className="mx-auto max-w-4xl px-6 py-12">
         <div className="mb-2">
@@ -117,8 +75,6 @@ export default function ProductLocalePage({
           &larr; All Products
         </Link>
       </div>
-
-      {isDraft && showDrafts && <DraftBanner />}
 
       <div className="mb-10">
         <div className="flex items-start justify-between">

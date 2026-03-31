@@ -1,9 +1,17 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProduct, listFeatures } from "@/lib/api/content";
-import type { ProductResponse, FeatureResponse } from "@/lib/api/content";
+import {
+  listProducts,
+  loadProduct,
+  loadFeatures,
+  loadVersionManifest,
+} from "@/lib/content-static";
+
+export function generateStaticParams() {
+  return listProducts().map((product) => ({
+    product: product.slug,
+  }));
+}
 
 /** Resolve a localized value with fallback to default locale, then first available. */
 function getLocalizedValue(
@@ -19,75 +27,28 @@ function getLocalizedValue(
   );
 }
 
-interface VersionEntry {
-  version: string;
-  features: FeatureResponse[];
-  versionStatus: string;
-}
-
 interface ChangelogPageProps {
-  productSlug: string;
+  params: Promise<{ product: string }>;
 }
 
-export default function ChangelogPage({ productSlug }: ChangelogPageProps) {
-  const [product, setProduct] = useState<ProductResponse | null>(null);
-  const [versionEntries, setVersionEntries] = useState<VersionEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+export default async function ChangelogPage({ params }: ChangelogPageProps) {
+  const { product: productSlug } = await params;
+  const product = loadProduct(productSlug);
 
-  useEffect(() => {
-    async function loadData() {
-      const productData = await getProduct(productSlug);
-      if (!productData) {
-        setNotFound(true);
-        setIsLoading(false);
-        return;
-      }
-
-      setProduct(productData);
-
-      const entries = await Promise.all(
-        productData.versions.map(async (version) => {
-          const data = await listFeatures(productSlug, version, true);
-          return {
-            version,
-            features: data.features,
-            versionStatus: data.versionStatus,
-          };
-        }),
-      );
-
-      setVersionEntries(entries);
-      setIsLoading(false);
-    }
-
-    loadData();
-  }, [productSlug]);
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        <div className="py-12 text-center text-sm text-[#6B6B6B]">
-          Loading...
-        </div>
-      </div>
-    );
-  }
-
-  if (notFound || !product) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12 text-center">
-        <h1 className="font-serif text-2xl font-bold text-[#1A1A1A]">
-          Product not found
-        </h1>
-        <p className="mt-2 text-sm text-[#6B6B6B]">
-          The product you are looking for does not exist.
-        </p>
-      </div>
-    );
+  if (!product) {
+    notFound();
   }
 
   const defaultLocale = product.defaultLocale;
+
+  const versionEntries = product.versions.map((version) => {
+    const manifest = loadVersionManifest(productSlug, version);
+    return {
+      version,
+      features: loadFeatures(productSlug, version),
+      versionStatus: manifest?.status ?? "draft",
+    };
+  });
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">

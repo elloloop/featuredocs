@@ -1,37 +1,8 @@
-"use client";
-
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import { listProducts } from "@/lib/api/content";
-import type { ProductResponse } from "@/lib/api/content";
+import { listProducts } from "@/lib/content-static";
 
 export default function HomePage() {
-  const [products, setProducts] = useState<ProductResponse[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    listProducts()
-      .then(setProducts)
-      .finally(() => setIsLoading(false));
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto max-w-4xl px-6 py-12">
-        <div className="mb-10">
-          <h1 className="font-serif text-3xl font-bold text-[#1A1A1A]">
-            Products
-          </h1>
-          <p className="mt-2 text-sm text-[#6B6B6B]">
-            Browse feature documentation for all products.
-          </p>
-        </div>
-        <div className="py-12 text-center text-sm text-[#6B6B6B]">
-          Loading products...
-        </div>
-      </div>
-    );
-  }
+  const products = listProducts();
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">

@@ -6,7 +6,7 @@ interface FeatureCardProps {
     slug: string;
     title: Record<string, string>;
     summary: Record<string, string>;
-    video: string;
+    video: string | null;
   };
   productSlug: string;
   locale: string;

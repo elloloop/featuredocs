@@ -157,7 +157,7 @@ export default function FeedbackDialog({
         setSubmitted(false);
       }, 2000);
     } catch {
-      setError("Something went wrong. Please try again.");
+      setError("Feedback is not available yet. The API will be deployed soon.");
     } finally {
       setIsSubmitting(false);
     }

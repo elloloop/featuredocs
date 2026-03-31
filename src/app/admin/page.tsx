@@ -1,5 +1,3 @@
-"use client";
-
 import AdminFeedbackTable from "@/components/AdminFeedbackTable";
 
 export default function AdminPage() {

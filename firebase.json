@@ -2,15 +2,9 @@
   "hosting": {
     "site": "featuredocs",
     "public": "out",
+    "cleanUrls": true,
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
-      {
-        "source": "/api/**",
-        "run": {
-          "serviceId": "featuredocs-api",
-          "region": "europe-west1"
-        }
-      },
       {
         "source": "**",
         "destination": "/index.html"
