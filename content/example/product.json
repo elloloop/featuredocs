@@ -1,0 +1,8 @@
+{
+  "name": "Example App",
+  "tagline": "A sample product to demonstrate featuredocs",
+  "locales": ["en"],
+  "defaultLocale": "en",
+  "versions": ["0.1.0"],
+  "latest": "0.1.0"
+}

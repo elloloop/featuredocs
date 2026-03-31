@@ -1,0 +1,15 @@
+{
+  "version": "0.1.0",
+  "status": "published",
+  "releaseDate": "2026-03-31",
+  "features": [
+    {
+      "slug": "getting-started",
+      "title": { "en": "Getting Started" },
+      "summary": { "en": "Set up your app and explore the key features." },
+      "device": "iphone",
+      "orientation": "portrait",
+      "video": "demo_getting_started.mp4"
+    }
+  ]
+}

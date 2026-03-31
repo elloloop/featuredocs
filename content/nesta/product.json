@@ -1,9 +1,0 @@
-{
-  "name": "Nesta",
-  "tagline": "The calm family calendar that lives on your wall",
-  "description": "Nesta is a local-first family calendar designed to feel like a beautiful paper schedule pinned to your kitchen wall. No accounts, no cloud, no ads. Just your family's day, week, and month — synced across every device in your home over WiFi.",
-  "locales": ["en"],
-  "defaultLocale": "en",
-  "versions": ["0.1.0"],
-  "latest": "0.1.0"
-}
