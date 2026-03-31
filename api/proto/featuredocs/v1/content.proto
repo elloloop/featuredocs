@@ -1,0 +1,122 @@
+syntax = "proto3";
+package featuredocs.v1;
+
+option go_package = "github.com/glassa-work/featuredocs/api/gen/featuredocs/v1;featuredocsv1";
+
+// ContentService manages feature documentation content, including products,
+// features, versions, and rendered markdown documents.
+service ContentService {
+  // Save an edited feature document to the content directory.
+  rpc SaveDocument(SaveDocumentRequest) returns (SaveDocumentResponse);
+
+  // Publish a version, changing all its features from draft to published.
+  rpc PublishVersion(PublishVersionRequest) returns (PublishVersionResponse);
+
+  // List all registered products.
+  rpc ListProducts(ListProductsRequest) returns (ListProductsResponse);
+
+  // Get detailed information about a specific product.
+  rpc GetProduct(GetProductRequest) returns (GetProductResponse);
+
+  // List features for a given product version, with optional draft filtering.
+  rpc ListFeatures(ListFeaturesRequest) returns (ListFeaturesResponse);
+
+  // Get a feature document with both raw markdown and rendered HTML.
+  rpc GetDocument(GetDocumentRequest) returns (GetDocumentResponse);
+}
+
+// Product represents a software product with its supported locales and versions.
+message Product {
+  string slug = 1;
+  string name = 2;
+  string tagline = 3;
+  repeated string locales = 4;
+  string default_locale = 5;
+  repeated string versions = 6;
+  string latest = 7;
+}
+
+// Feature represents a single feature within a product version.
+message Feature {
+  string slug = 1;
+  map<string, string> title = 2;
+  map<string, string> summary = 3;
+  string device = 4;
+  string orientation = 5;
+  string video = 6;
+  string status = 7;
+}
+
+// SaveDocumentRequest contains the data needed to save a feature document.
+message SaveDocumentRequest {
+  string product = 1;
+  string version = 2;
+  string locale = 3;
+  string feature_slug = 4;
+  string content = 5;
+  string edit_message = 6;
+}
+
+// SaveDocumentResponse confirms the document save operation.
+message SaveDocumentResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// PublishVersionRequest identifies which product version to publish.
+message PublishVersionRequest {
+  string product = 1;
+  string version = 2;
+}
+
+// PublishVersionResponse confirms the publish operation.
+message PublishVersionResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// ListProductsRequest has no parameters; returns all products.
+message ListProductsRequest {}
+
+// ListProductsResponse contains all registered products.
+message ListProductsResponse {
+  repeated Product products = 1;
+}
+
+// GetProductRequest identifies a product by its slug.
+message GetProductRequest {
+  string slug = 1;
+}
+
+// GetProductResponse contains the requested product details.
+message GetProductResponse {
+  Product product = 1;
+}
+
+// ListFeaturesRequest identifies a product version and whether to include drafts.
+message ListFeaturesRequest {
+  string product = 1;
+  string version = 2;
+  bool include_drafts = 3;
+}
+
+// ListFeaturesResponse contains the features and the version status.
+message ListFeaturesResponse {
+  repeated Feature features = 1;
+  string version_status = 2;
+}
+
+// GetDocumentRequest identifies a specific document by product, version, locale, and feature.
+message GetDocumentRequest {
+  string product = 1;
+  string version = 2;
+  string locale = 3;
+  string feature_slug = 4;
+}
+
+// GetDocumentResponse contains the raw markdown, rendered HTML, and feature metadata.
+message GetDocumentResponse {
+  string content = 1;
+  string rendered_html = 2;
+  Feature feature = 3;
+}

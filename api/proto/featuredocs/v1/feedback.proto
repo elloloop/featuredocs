@@ -1,0 +1,102 @@
+syntax = "proto3";
+package featuredocs.v1;
+
+option go_package = "github.com/glassa-work/featuredocs/api/gen/featuredocs/v1;featuredocsv1";
+
+// FeedbackService handles user feedback on feature documentation and videos.
+// Anti-spam protection via Cloudflare Turnstile and IP-based rate limiting.
+service FeedbackService {
+  // Submit feedback on a feature doc or video.
+  // Requires a valid Turnstile token and passes IP-based rate limiting.
+  rpc SubmitFeedback(SubmitFeedbackRequest) returns (SubmitFeedbackResponse);
+
+  // List feedback with optional filters by product, feature, status, or locale.
+  rpc ListFeedback(ListFeedbackRequest) returns (ListFeedbackResponse);
+
+  // Update feedback status (admin operation).
+  rpc UpdateFeedbackStatus(UpdateFeedbackStatusRequest) returns (UpdateFeedbackStatusResponse);
+}
+
+// FeedbackType classifies what kind of feedback is being submitted.
+enum FeedbackType {
+  FEEDBACK_TYPE_UNSPECIFIED = 0;
+  FEEDBACK_TYPE_TEXT = 1;
+  FEEDBACK_TYPE_VIDEO = 2;
+  FEEDBACK_TYPE_GENERAL = 3;
+}
+
+// FeedbackStatus tracks the lifecycle of a feedback item.
+enum FeedbackStatus {
+  FEEDBACK_STATUS_UNSPECIFIED = 0;
+  FEEDBACK_STATUS_OPEN = 1;
+  FEEDBACK_STATUS_ACKNOWLEDGED = 2;
+  FEEDBACK_STATUS_FIXED = 3;
+  FEEDBACK_STATUS_DISMISSED = 4;
+}
+
+// FeedbackItem represents a single piece of feedback with its metadata.
+message FeedbackItem {
+  int64 id = 1;
+  string product = 2;
+  string feature = 3;
+  string version = 4;
+  string locale = 5;
+  FeedbackType type = 6;
+  string selected_text = 7;
+  string video_reference = 8;
+  string comment = 9;
+  string email = 10;
+  FeedbackStatus status = 11;
+  string github_issue_url = 12;
+  string created_at = 13;
+  string resolved_at = 14;
+}
+
+// SubmitFeedbackRequest contains everything needed to submit user feedback.
+message SubmitFeedbackRequest {
+  string product = 1;
+  string feature = 2;
+  string version = 3;
+  string locale = 4;
+  FeedbackType type = 5;
+  string selected_text = 6;
+  string video_reference = 7;
+  string comment = 8;
+  string email = 9;
+  string turnstile_token = 10;
+}
+
+// SubmitFeedbackResponse is returned after feedback submission.
+message SubmitFeedbackResponse {
+  bool success = 1;
+  string message = 2;
+  string github_issue_url = 3;
+}
+
+// ListFeedbackRequest filters feedback items. Empty fields match all.
+message ListFeedbackRequest {
+  string product = 1;
+  string feature = 2;
+  FeedbackStatus status = 3;
+  string locale = 4;
+  int32 limit = 5;
+  int32 offset = 6;
+}
+
+// ListFeedbackResponse contains a page of feedback items and the total count.
+message ListFeedbackResponse {
+  repeated FeedbackItem items = 1;
+  int32 total = 2;
+}
+
+// UpdateFeedbackStatusRequest changes the status of a feedback item.
+message UpdateFeedbackStatusRequest {
+  int64 id = 1;
+  FeedbackStatus status = 2;
+}
+
+// UpdateFeedbackStatusResponse confirms the status change.
+message UpdateFeedbackStatusResponse {
+  bool success = 1;
+  FeedbackItem item = 2;
+}
