@@ -1,0 +1,301 @@
+{
+  "version": "0.1.0",
+  "status": "published",
+  "releaseDate": "2026-04-25",
+  "features": [
+    {
+      "slug": "multi-provider-chat",
+      "title": { "en": "Multi-provider chat" },
+      "summary": { "en": "Chat with Anthropic, OpenAI, Gemini, Together, Groq, OpenRouter, or your own custom endpoint." },
+      "isNew": true
+    },
+    {
+      "slug": "streaming-responses",
+      "title": { "en": "Streaming responses" },
+      "summary": { "en": "Watch model replies appear token-by-token as they are generated." },
+      "isNew": true
+    },
+    {
+      "slug": "conversation-history",
+      "title": { "en": "Conversation history" },
+      "summary": { "en": "Every chat is saved locally and reachable from the side drawer." },
+      "isNew": true
+    },
+    {
+      "slug": "markdown-rendering",
+      "title": { "en": "Markdown rendering" },
+      "summary": { "en": "Replies are rendered with rich markdown including headings, lists, and code." },
+      "isNew": true
+    },
+    {
+      "slug": "cancel-generation",
+      "title": { "en": "Cancel in-flight generation" },
+      "summary": { "en": "Stop a streaming reply at any point with a single tap." },
+      "isNew": true
+    },
+    {
+      "slug": "vision-attach",
+      "title": { "en": "Attach images for vision" },
+      "summary": { "en": "Send images alongside your prompt to vision-capable models." },
+      "isNew": true
+    },
+    {
+      "slug": "projects",
+      "title": { "en": "Projects" },
+      "summary": { "en": "Group related conversations under a shared workspace with its own system prompt." },
+      "isNew": true
+    },
+    {
+      "slug": "dictation",
+      "title": { "en": "On-device speech dictation" },
+      "summary": { "en": "Dictate your prompts using on-device speech recognition." },
+      "isNew": true
+    },
+    {
+      "slug": "code-block-copy",
+      "title": { "en": "Code-block copy button" },
+      "summary": { "en": "Copy any code block from a reply with one tap." },
+      "isNew": true
+    },
+    {
+      "slug": "drawer-search",
+      "title": { "en": "Search conversations in drawer" },
+      "summary": { "en": "Find any past conversation by title from the drawer search bar." },
+      "isNew": true
+    },
+    {
+      "slug": "token-usage",
+      "title": { "en": "Token usage badge" },
+      "summary": { "en": "See how many tokens each reply consumed at a glance." },
+      "isNew": true
+    },
+    {
+      "slug": "auto-scroll-lock",
+      "title": { "en": "Auto-scroll lock + jump-to-latest" },
+      "summary": { "en": "Scroll up to read older messages without being yanked back; jump to the latest with one tap." },
+      "isNew": true
+    },
+    {
+      "slug": "rename-conversation",
+      "title": { "en": "Rename a conversation" },
+      "summary": { "en": "Give any conversation a custom title from the drawer." },
+      "isNew": true
+    },
+    {
+      "slug": "theme-toggle",
+      "title": { "en": "Theme toggle (system / light / dark)" },
+      "summary": { "en": "Pick light, dark, or follow your system theme." },
+      "isNew": true
+    },
+    {
+      "slug": "edit-user-message",
+      "title": { "en": "Edit and resend a user message" },
+      "summary": { "en": "Tweak any prompt you sent and regenerate the reply." },
+      "isNew": true
+    },
+    {
+      "slug": "model-attribution",
+      "title": { "en": "Per-message model attribution" },
+      "summary": { "en": "Each reply shows which model produced it." },
+      "isNew": true
+    },
+    {
+      "slug": "pin-conversations",
+      "title": { "en": "Pin conversations" },
+      "summary": { "en": "Keep important chats at the top of the drawer." },
+      "isNew": true
+    },
+    {
+      "slug": "drawer-date-grouping",
+      "title": { "en": "Drawer date grouping" },
+      "summary": { "en": "Conversations are grouped by Today, Yesterday, This Week, and Older." },
+      "isNew": true
+    },
+    {
+      "slug": "render-user-images",
+      "title": { "en": "Render attached images in user bubbles" },
+      "summary": { "en": "Images you sent appear inline in the chat history." },
+      "isNew": true
+    },
+    {
+      "slug": "error-retry",
+      "title": { "en": "Retry button in error bar" },
+      "summary": { "en": "Re-run a failed request without retyping your prompt." },
+      "isNew": true
+    },
+    {
+      "slug": "persist-user-images",
+      "title": { "en": "Persist attached images in history" },
+      "summary": { "en": "Images stay attached to your messages even after you leave the conversation." },
+      "isNew": true
+    },
+    {
+      "slug": "keyboard-shortcuts",
+      "title": { "en": "Keyboard shortcuts" },
+      "summary": { "en": "Send with Cmd-Return, start a new chat with Cmd-N, and search with Cmd-K." },
+      "isNew": true
+    },
+    {
+      "slug": "personal-context",
+      "title": { "en": "Personal context (memory)" },
+      "summary": { "en": "Save facts about yourself once and have every model use them." },
+      "isNew": true
+    },
+    {
+      "slug": "cost-estimate",
+      "title": { "en": "Per-message USD cost estimate" },
+      "summary": { "en": "See an estimated dollar cost on every reply." },
+      "isNew": true
+    },
+    {
+      "slug": "conversation-markdown-export",
+      "title": { "en": "Copy conversation as markdown" },
+      "summary": { "en": "Copy an entire chat to your clipboard as clean markdown." },
+      "isNew": true
+    },
+    {
+      "slug": "saved-prompts",
+      "title": { "en": "Saved prompts with slash autocomplete" },
+      "summary": { "en": "Save reusable prompts and recall them by typing a slash command." },
+      "isNew": true
+    },
+    {
+      "slug": "load-restores-model",
+      "title": { "en": "Restore model on conversation load" },
+      "summary": { "en": "Reopening a chat brings back the model it was using." },
+      "isNew": true
+    },
+    {
+      "slug": "drawer-multi-select",
+      "title": { "en": "Multi-select drawer with batch actions" },
+      "summary": { "en": "Select multiple conversations to delete or pin them all at once." },
+      "isNew": true
+    },
+    {
+      "slug": "project-picker-counts",
+      "title": { "en": "Conversation counts in project picker" },
+      "summary": { "en": "See how many chats live in each project before you switch." },
+      "isNew": true
+    },
+    {
+      "slug": "drag-drop-attach",
+      "title": { "en": "Drag-and-drop image attach (desktop)" },
+      "summary": { "en": "Drop an image straight onto the composer on desktop to attach it." },
+      "isNew": true
+    },
+    {
+      "slug": "regenerate-with-model",
+      "title": { "en": "Regenerate with a different model" },
+      "summary": { "en": "Re-run any reply through a different model from the message menu." },
+      "isNew": true
+    },
+    {
+      "slug": "slash-help",
+      "title": { "en": "/help slash command" },
+      "summary": { "en": "Type /help in the composer to see every slash command and shortcut." },
+      "isNew": true
+    },
+    {
+      "slug": "composer-drafts",
+      "title": { "en": "Per-conversation composer drafts" },
+      "summary": { "en": "Half-typed messages are kept per conversation so you can pick up where you left off." },
+      "isNew": true
+    },
+    {
+      "slug": "duplicate-conversation",
+      "title": { "en": "Duplicate a conversation" },
+      "summary": { "en": "Clone a chat to branch off without disturbing the original." },
+      "isNew": true
+    },
+    {
+      "slug": "in-conversation-search",
+      "title": { "en": "In-conversation message search" },
+      "summary": { "en": "Search inside a long chat to jump to any message." },
+      "isNew": true
+    },
+    {
+      "slug": "thinking-indicator",
+      "title": { "en": "Thinking… indicator with elapsed timer" },
+      "summary": { "en": "See when the model is working and how long it has been thinking." },
+      "isNew": true
+    },
+    {
+      "slug": "model-picker-search",
+      "title": { "en": "Searchable model picker" },
+      "summary": { "en": "Filter the model list by name or provider as you type." },
+      "isNew": true
+    },
+    {
+      "slug": "conversation-system-prompt",
+      "title": { "en": "Per-conversation custom system prompt" },
+      "summary": { "en": "Override the system prompt for one specific chat." },
+      "isNew": true
+    },
+    {
+      "slug": "followup-suggestions",
+      "title": { "en": "Follow-up suggestion chips" },
+      "summary": { "en": "Tap a suggested follow-up question after each reply to keep the conversation going." },
+      "isNew": true
+    },
+    {
+      "slug": "data-export",
+      "title": { "en": "Export all data as JSON" },
+      "summary": { "en": "Download a single JSON file with every conversation, project, and setting." },
+      "isNew": true
+    },
+    {
+      "slug": "data-import",
+      "title": { "en": "Import data from JSON backup" },
+      "summary": { "en": "Restore a previous export to bring all your chats back." },
+      "isNew": true
+    },
+    {
+      "slug": "message-feedback",
+      "title": { "en": "Thumbs up/down message feedback" },
+      "summary": { "en": "Rate any reply to keep track of what worked." },
+      "isNew": true
+    },
+    {
+      "slug": "prompt-history",
+      "title": { "en": "Up-arrow prompt history recall" },
+      "summary": { "en": "Press the up arrow in the composer to step back through your previous prompts." },
+      "isNew": true
+    },
+    {
+      "slug": "message-timestamps",
+      "title": { "en": "Per-message timestamp on tap" },
+      "summary": { "en": "Tap any bubble to reveal when it was sent." },
+      "isNew": true
+    },
+    {
+      "slug": "model-favorites",
+      "title": { "en": "Favorite a model from the picker" },
+      "summary": { "en": "Star the models you use most and they jump to the top of the list." },
+      "isNew": true
+    },
+    {
+      "slug": "system-prompt-presets",
+      "title": { "en": "System prompt presets library" },
+      "summary": { "en": "Pick from a library of ready-made system prompts or save your own." },
+      "isNew": true
+    },
+    {
+      "slug": "conversation-tags",
+      "title": { "en": "Conversation tags with multi-select filter" },
+      "summary": { "en": "Tag conversations and filter the drawer by one or more tags." },
+      "isNew": true
+    },
+    {
+      "slug": "text-scale",
+      "title": { "en": "Accessibility text size slider" },
+      "summary": { "en": "Resize chat text to whatever is comfortable to read." },
+      "isNew": true
+    },
+    {
+      "slug": "fork-chat",
+      "title": { "en": "Fork chat from a specific message" },
+      "summary": { "en": "Branch a new conversation from any earlier message in the chat." },
+      "isNew": true
+    }
+  ]
+}
