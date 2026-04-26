@@ -1,8 +1,13 @@
 {
   "name": "Kite AI",
   "tagline": "A multi-provider conversational agent in your pocket",
-  "locales": ["en"],
+  "description": "",
+  "locales": [
+    "en"
+  ],
   "defaultLocale": "en",
-  "versions": ["0.1.0"],
+  "versions": [
+    "0.1.0"
+  ],
   "latest": "0.1.0"
 }
